@@ -1,0 +1,26 @@
+services:
+  customer-support:
+    build: .
+    container_name: customer-support-app
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    expose:
+      - "8501"
+
+    networks:
+      - traefik
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.customer-support.rule=Host(`support.YOURDOMAIN.com`)"
+      - "traefik.http.routers.customer-support.entrypoints=websecure"
+      - "traefik.http.routers.customer-support.tls=true"
+      - "traefik.http.routers.customer-support.tls.certresolver=YOUR_CERT_RESOLVER"
+      - "traefik.http.services.customer-support.loadbalancer.server.port=8501"
+
+networks:
+  traefik:
+    external: true
